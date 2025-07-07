@@ -39,7 +39,7 @@ server {
     add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval';" always;
     
     # Prevent access to dot-files, which we don't need anyway
-    location ~ /\. {
+    location ~ /\\. {     # <--- CORRECTED LINE
         deny all;
     }
 
@@ -50,9 +50,9 @@ server {
     }
 
     # Pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-    location ~ \.php$ {
+    location ~ \\.php$ {   # <--- CORRECTED LINE
         try_files $uri =404;
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_split_path_info ^(.+\\.php)(/.+)$; # <--- ALSO CORRECTED THIS ONE
         fastcgi_pass 127.0.0.1:9000;
         fastcgi_index index.php;
         include fastcgi_params;
