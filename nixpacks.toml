@@ -1,29 +1,31 @@
 # nixpacks.toml
 
-[phases.setup]
-# Installs PHP, Node.js, and extensions
-nixPkgs = ["...", "php", "php.extensions.gd", "php.extensions.intl", "php.extensions.curl", "php.extensions.mysql", "nodejs", "npm"]
+# Use the [providers] table to define language versions and extensions
+[providers]
+php = "8.1"  # Be explicit with the PHP version
+node = "18" # Specify a Node.js LTS version to ensure npm is available
 
+# Define PHP extensions here in a clean, Nixpacks-native way
+[php.extensions]
+gd = "*"
+intl = "*"
+curl = "*"
+mysqli = "*" # Use mysqli, the modern extension for MySQL
+
+# The build phase remains the same
 [phases.build]
-# Commands to run during the build phase
-# This now includes the asset build steps
 cmds = [
     "composer install --no-dev --optimize-autoloader",
     "npm install",
     "npm run build"
 ]
 
+# The start phase and webServer config are also correct from before
 [start]
-# The start command remains the same
 cmd = "php-fpm -D && nginx -g 'daemon off;'"
 
-# This is the most important part for fixing the 404 errors.
-# It provides a custom Nginx configuration.
 [webServer]
-# The command to start the web server (Nixpacks will manage it)
-command = "nginx" 
-
-# Custom Nginx configuration file content
+command = "nginx"
 config = """
 server {
     listen 80;
@@ -39,7 +41,7 @@ server {
     add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval';" always;
     
     # Prevent access to dot-files, which we don't need anyway
-    location ~ /\\. {     # <--- CORRECTED LINE
+    location ~ /\\. {
         deny all;
     }
 
@@ -50,9 +52,9 @@ server {
     }
 
     # Pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-    location ~ \\.php$ {   # <--- CORRECTED LINE
+    location ~ \\.php$ {
         try_files $uri =404;
-        fastcgi_split_path_info ^(.+\\.php)(/.+)$; # <--- ALSO CORRECTED THIS ONE
+        fastcgi_split_path_info ^(.+\\.php)(/.+)$;
         fastcgi_pass 127.0.0.1:9000;
         fastcgi_index index.php;
         include fastcgi_params;
