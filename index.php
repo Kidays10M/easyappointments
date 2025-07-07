@@ -119,7 +119,7 @@ $app_env = getenv('APP_ENV');
 if ($app_env) {
     define('ENVIRONMENT', $app_env);
 } else {
-    define('ENVIRONMENT', Config::DEBUG_MODE ? 'development' : 'production');
+    define('ENVIRONMENT', Config::$DEBUG_MODE ? 'development' : 'production');
 }
 
 /*
