@@ -10,8 +10,8 @@
 |
 */
 
-$config['google_sync_feature'] = Config::GOOGLE_SYNC_FEATURE;
+$config['google_sync_feature'] = Config::$GOOGLE_SYNC_FEATURE;
 
-$config['google_client_id'] = Config::GOOGLE_CLIENT_ID;
+$config['google_client_id'] = Config::$GOOGLE_CLIENT_ID;
 
-$config['google_client_secret'] = Config::GOOGLE_CLIENT_SECRET;
+$config['google_client_secret'] = Config::$GOOGLE_CLIENT_SECRET;
