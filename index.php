@@ -53,7 +53,16 @@ if (!file_exists(__DIR__ . '/config.php')) {
     );
 }
 
+// 1. Include the configuration class
 require_once __DIR__ . '/config.php';
+
+// 2. Initialize the configuration
+Config::init();
+
+// 3. Now you can safely use the static properties
+echo 'The base URL is: ' . Config::$BASE_URL;
+echo 'The database host is: ' . Config::$DB_HOST;
+
 
 /*
  *---------------------------------------------------------------
