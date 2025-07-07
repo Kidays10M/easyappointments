@@ -1,36 +1,38 @@
 # nixpacks.toml
 
-# Use the [providers] table to define language versions and extensions
-[providers]
-php = "8.1"  # Be explicit with the PHP version
-node = "18" # Specify a Node.js LTS version to ensure npm is available
+[phases.setup]
+# Define the exact Nix packages to install.
+# This uses the correct, version-specific package names.
+nixPkgs = [
+    "php81", 
+    "php81Packages.composer", # Install composer for the specified PHP version
+    "nodejs-18_x", # This package includes npm
+    "php81Extensions.gd",
+    "php81Extensions.intl",
+    "php81Extensions.curl",
+    "php81Extensions.mysqli"
+]
 
-# Define PHP extensions here in a clean, Nixpacks-native way
-[php.extensions]
-gd = "*"
-intl = "*"
-curl = "*"
-mysqli = "*" # Use mysqli, the modern extension for MySQL
-
-# The build phase remains the same
 [phases.build]
+# This section remains the same
 cmds = [
     "composer install --no-dev --optimize-autoloader",
     "npm install",
     "npm run build"
 ]
 
-# The start phase and webServer config are also correct from before
 [start]
+# This section remains the same
 cmd = "php-fpm -D && nginx -g 'daemon off;'"
 
 [webServer]
+# The Nginx config is correct and remains the same
 command = "nginx"
 config = """
 server {
     listen 80;
     server_name localhost;
-    root /app; # The root directory of your application in the container
+    root /app;
     index index.php;
 
     # Add headers to serve security related headers
