@@ -2,11 +2,10 @@
 
 [phases.setup]
 # Define the exact Nix packages to install.
-# This uses the correct, version-specific package names.
 nixPkgs = [
     "php81", 
-    "php81Packages.composer", # Install composer for the specified PHP version
-    "nodejs-18_x", # This package includes npm
+    "php81Packages.composer",
+    "nodejs-18_x",
     "php81Extensions.gd",
     "php81Extensions.intl",
     "php81Extensions.curl",
@@ -14,19 +13,17 @@ nixPkgs = [
 ]
 
 [phases.build]
-# This section remains the same
+# Build the application assets.
 cmds = [
     "composer install --no-dev --optimize-autoloader",
     "npm install",
     "npm run build"
 ]
 
-[start]
-# This section remains the same
-cmd = "php-fpm -D && nginx -g 'daemon off;'"
+# THE [start] SECTION HAS BEEN REMOVED.
 
 [webServer]
-# The Nginx config is correct and remains the same
+# This section will now correctly handle starting PHP-FPM and Nginx.
 command = "nginx"
 config = """
 server {
