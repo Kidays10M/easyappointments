@@ -1,0 +1,63 @@
+# nixpacks.toml
+
+[phases.setup]
+# Installs PHP, Node.js, and extensions
+nixPkgs = ["...", "php", "php.extensions.gd", "php.extensions.intl", "php.extensions.curl", "php.extensions.mysql", "nodejs", "npm"]
+
+[phases.build]
+# Commands to run during the build phase
+# This now includes the asset build steps
+cmds = [
+    "composer install --no-dev --optimize-autoloader",
+    "npm install",
+    "npm run build"
+]
+
+[start]
+# The start command remains the same
+cmd = "php-fpm -D && nginx -g 'daemon off;'"
+
+# This is the most important part for fixing the 404 errors.
+# It provides a custom Nginx configuration.
+[webServer]
+# The command to start the web server (Nixpacks will manage it)
+command = "nginx" 
+
+# Custom Nginx configuration file content
+config = """
+server {
+    listen 80;
+    server_name localhost;
+    root /app; # The root directory of your application in the container
+    index index.php;
+
+    # Add headers to serve security related headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;
+    add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline' 'unsafe-eval';" always;
+    
+    # Prevent access to dot-files, which we don't need anyway
+    location ~ /\. {
+        deny all;
+    }
+
+    location / {
+        # First attempt to serve request as file, then
+        # as directory, then fall back to displaying a 404.
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # Pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+}
+"""
