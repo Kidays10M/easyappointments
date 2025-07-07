@@ -1,32 +1,31 @@
 <?php
-/* ----------------------------------------------------------------------------
- * Easy!Appointments - Online Appointment Scheduler
- * ---------------------------------------------------------------------------- */
-
 class Config
 {
     // ------------------------------------------------------------------------
     // GENERAL SETTINGS
     // ------------------------------------------------------------------------
 
-    const BASE_URL = 'https://' . getenv('RAILWAY_PUBLIC_DOMAIN');
-    const LANGUAGE = 'english';
-    const DEBUG_MODE = true;
+    public static string $BASE_URL = 'https://' . getenv('RAILWAY_PUBLIC_DOMAIN');
+    public static string $LANGUAGE = 'english';
+    public static bool $DEBUG_MODE = true;
 
     // ------------------------------------------------------------------------
     // DATABASE SETTINGS
     // ------------------------------------------------------------------------
 
-    const DB_HOST = getenv('DB_HOST');
-    const DB_NAME = getenv('DB_NAME');
-    const DB_USERNAME = getenv('DB_USERNAME');
-    const DB_PASSWORD = getenv('DB_PASSWORD');
+    public static string $DB_HOST = getenv('DB_HOST');
+    public static string $DB_NAME = getenv('DB_NAME');
+    public static string $DB_USERNAME = getenv('DB_USERNAME');
+    public static string $DB_PASSWORD = getenv('DB_PASSWORD');
 
     // ------------------------------------------------------------------------
     // GOOGLE CALENDAR SYNC
     // ------------------------------------------------------------------------
 
-    const GOOGLE_SYNC_FEATURE = false;
-    const GOOGLE_CLIENT_ID = getenv('GOOGLE_CLIENT_ID');
-    const GOOGLE_CLIENT_SECRET = getenv('GOOGLE_CLIENT_SECRET');
+    public static bool $GOOGLE_SYNC_FEATURE = false;
+    public static string $GOOGLE_CLIENT_ID = getenv('GOOGLE_CLIENT_ID') ?: '';
+    public static string $GOOGLE_CLIENT_SECRET = getenv('GOOGLE_CLIENT_SECRET') ?: '';
 }
+// ------------------------------------------------------------------------
+// END OF CONFIGURATION
+// ------------------------------------------------------------------------
