@@ -2,8 +2,10 @@
 
 [phases.setup]
 # Define the exact Nix packages to install.
+# This list now includes nginx.
 nixPkgs = [
     "php81", 
+    "nginx", # <--- THIS WAS THE MISSING PIECE
     "php81Packages.composer",
     "nodejs-18_x",
     "php81Extensions.gd",
@@ -20,10 +22,10 @@ cmds = [
     "npm run build"
 ]
 
-# THE [start] SECTION HAS BEEN REMOVED.
+# NO [start] SECTION
 
 [webServer]
-# This section will now correctly handle starting PHP-FPM and Nginx.
+# This section will now find and start the installed nginx command.
 command = "nginx"
 config = """
 server {
